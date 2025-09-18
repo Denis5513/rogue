@@ -1,5 +1,6 @@
 import { randomIntRange } from "./random.js";
 
+// Генерирует проходы, но так, что каждая комната касается как минимум одного прохода
 export default function generateMinPasses(rooms) {
 	const xPassages = [];
 	const yPassages = [];

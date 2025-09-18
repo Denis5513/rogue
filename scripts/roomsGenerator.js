@@ -1,5 +1,6 @@
 import { randomInt, randomIntRange } from "./random.js";
 
+// Разбивает число на 2 множителя, например 10 -> [2, 5] ()
 function getMultipliers(num) {
 	let start = Math.ceil(Math.sqrt(num));
 	for (; start <= num; ++start) {
@@ -8,6 +9,9 @@ function getMultipliers(num) {
 	return -1;
 }
 
+// Разбивает карту на зоны, в каждой зоне - ровно одна комната
+// Например, если у нас карта шириной 10x5 и нужно создать 6 комнат,
+// то она разобъёт карту на 3 - 4 - 3 клетки по горизонали, и 3 - 2 клетки по вертикали
 function createMesh(roomsNumber, width, height) {
 	const [lw, lh] = getMultipliers(roomsNumber).sort((a, b) => b - a);
 
@@ -26,6 +30,7 @@ function createMesh(roomsNumber, width, height) {
 	return [mashX, mashY];
 }
 
+// Создаёт комнату случайного размера в пределах зоны шириной и высотой dw и dh. Комната - 2 вектора: позиция (pos) и диагональ (size)
 function createRoom(dw, dh, minRoomSize, maxRoomSize) {
 	const pos = [];
 	const size = [];
@@ -45,6 +50,7 @@ function createRoom(dw, dh, minRoomSize, maxRoomSize) {
 	return { pos, size };
 }
 
+// Создаёт в каждой зоне по комнате
 export default function generateRooms(roomsNumber, width, height, minRoomSize, maxRoomSize) {
 	const [mashX, mashY] = createMesh(roomsNumber, width, height);
 	const rooms = [];

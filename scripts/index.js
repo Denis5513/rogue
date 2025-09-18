@@ -24,7 +24,7 @@ const playerConfig = {
 	interactionRadius: 1,
 	maxHP: 10,
 	defaultDamage: 2,
-	TBA: 0.5,
+	TBA: 0.5, //<- время "перезарядки" атаки
 };
 
 const enemyConfig = {
@@ -46,8 +46,11 @@ export default class Game {
 		const keyA = new Key("a");
 		const keyD = new Key("d");
 		const keySpace = new Key(" ");
+
+		// Контролирует состояния кнопок: isPressed
 		const keyController = new KeyController([keyS, keyD, keyA, keyW, keySpace]);
 
+		// Генерация карты
 		const map = new Map(mapConfig);
 		map.init(".field");
 
@@ -74,6 +77,7 @@ export default class Game {
 			.splice(0, 10)
 			.map((position) => new Enemy({ ...enemyConfig, position }));
 
+		// Контролирует состояния всех "сущностей" и отрисовывает их
 		const entitiesController = new EntitiesController(
 			[player, ...potions, ...swords, ...enemies],
 			map

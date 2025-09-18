@@ -7,6 +7,7 @@ export function randomIntRange(min, max) {
 	return min + randomInt(max - min);
 }
 
+// Перемешиваем массив случайным образом
 export function mixArray(arr) {
 	for (let i = 0; i < arr.length; ++i) {
 		const i1 = randomInt(arr.length);

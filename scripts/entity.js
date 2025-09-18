@@ -1,6 +1,7 @@
 import { wallId } from "./map.js";
 import { randomInt } from "./random.js";
 
+// Общий класс для сущностей
 export class Entity {
 	constructor({
 		type,
@@ -26,11 +27,14 @@ export class Entity {
 		this.toDelete = true;
 	}
 
-	perform() {}
+	// Ф-ция, выполняемая каждый раз в цикле для сущности (например передвижение игрока)
+	perform(timestamp) {}
 
-	interact() {}
+	// Ф-ция, выполняемая при взаимодействии сущности с другими
+	interact(entities, timestamp) {}
 }
 
+// Класс для игрока
 export class Player extends Entity {
 	constructor({
 		position,
@@ -94,6 +98,7 @@ export class Player extends Entity {
 	}
 }
 
+// Класс для врагов
 export class Enemy extends Entity {
 	constructor({ position, velosity, interactionRadius, TBA, maxHP, defaultDamage }) {
 		super({
@@ -142,6 +147,7 @@ export class Enemy extends Entity {
 	}
 }
 
+// Зелье здоровья
 export class HealthPotion extends Entity {
 	constructor({ position, interactionRadius }) {
 		super({
@@ -165,6 +171,7 @@ export class HealthPotion extends Entity {
 	}
 }
 
+// Меч
 export class Sword extends Entity {
 	constructor({ position, interactionRadius, swordDamageBuff }) {
 		super({
@@ -189,6 +196,7 @@ export class Sword extends Entity {
 	}
 }
 
+// Класс, контролирующий передвижение и взаимодействие сущностей
 export class EntitiesController {
 	constructor(entities, map) {
 		this.entities = entities;
@@ -215,10 +223,14 @@ export class EntitiesController {
 		const deltaT = timestamp - this.lastTimestamp;
 		this.lastTimestamp = timestamp;
 
+		// Выполнение perform для каждой сущности
 		this.entities.forEach((entity) => entity.perform(timestamp));
 
+		// Взаимодействие
 		this.entities.forEach((en, i) => {
-			if (en.interaction === false) return;
+			if (en.interaction === false) return; // <- взаимодействие отключено - пропускаем сущность
+
+			// Выбираем только те сущности, которые находятся не дальше, чем радиус взаимодействия
 			const interactiveEntities = this.entities.filter((en1, j) => {
 				if (i === j) return false;
 				const l = Math.pow(en.r[0] - en1.r[0], 2) + Math.pow(en.r[1] - en1.r[1], 2);
@@ -227,8 +239,10 @@ export class EntitiesController {
 			en.interact(interactiveEntities, timestamp);
 		});
 
+		// Удаляем "мёртвые" сущности
 		this.entities = this.entities.filter((entity) => entity.toDelete === false);
 
+		// Учёт коллизии
 		this.entities.forEach((entity) => {
 			if (entity.collisions === false) return;
 
@@ -256,12 +270,14 @@ export class EntitiesController {
 			});
 		});
 
+		// Смещаем на величину скорости после учёта коллизии
 		this.entities.forEach((entity) => {
 			entity.r[0] += (deltaT * entity.v[0]) / 1000;
 			entity.r[1] += (deltaT * entity.v[1]) / 1000;
 		});
 	}
 
+	// html элемент для каждого типа сущности
 	entityElement(entity) {
 		const defaultElem = $("<div>").css({
 			position: "absolute",
@@ -295,6 +311,7 @@ export class EntitiesController {
 		}
 	}
 
+	// Отрисовка
 	drawEntities() {
 		$(this.fieldEntitiesElem).empty();
 		this.entities.forEach((entity) => {

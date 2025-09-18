@@ -2,6 +2,7 @@ import generateMinPassages from "./passagesGenerator.js";
 import { mixArray, randomInt, randomIntRange } from "./random.js";
 import generateRooms from "./roomsGenerator.js";
 
+// id возможных блоков
 export const tileId = 0;
 export const wallId = 1;
 
@@ -45,6 +46,7 @@ export default class Map {
 		};
 	}
 
+	// Возвращает 4 ближайших соседних блока для pos (нужно для учёта коллизии)
 	getClosestBlocks(pos) {
 		const x = Math.floor(pos[0]);
 		const y = Math.floor(pos[1]);
@@ -56,6 +58,7 @@ export default class Map {
 		].map(([dx, dy]) => [x + dx, y + dy]);
 	}
 
+	// Генерирует последовательность случайных свободный позоций на карте
 	generateSpawnPoints() {
 		const freePoints = [];
 		this.mapArray.forEach((line, x) =>
@@ -79,6 +82,7 @@ export default class Map {
 		);
 	}
 
+	// Создаёт карту
 	initMap() {
 		const roomsNumber = randomIntRange(
 			this.roomsInfo.minRoomNumber,
@@ -140,6 +144,7 @@ export default class Map {
 		this.fieldMapElem = ".field-map";
 	}
 
+	// Отрисовка карты
 	drawMap() {
 		this.mapArray.forEach((line, i) =>
 			line.forEach((blockId, j) => {
